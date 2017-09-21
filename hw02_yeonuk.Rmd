@@ -2,8 +2,8 @@
 title: "hw02_yeonuk"
 author: "Yeonuk"
 date: "September 21, 2017"
-output: html_document
-keep_md: true
+output: github_document
+
 ---
 
 
