@@ -58,15 +58,12 @@ typeof(c(ncol(gapminder), nrow(gapminder)))
     + Answer: see the bellow summarized table
   
 ```{r}
-STAT_year <- gapminder %>% group_by(year) %>%
+STAT_year_continent <- gapminder %>% group_by(year, continent) %>%
                            summarize(MAX = max(lifeExp), MIN = min(lifeExp), 
-                                     MEAN = mean(lifeExp), SD = sd(lifeExp))
-STAT_continent <- gapminder %>% group_by(continent) %>%
-                           summarize(MAX = max(lifeExp), MIN = min(lifeExp), 
-                                     MEAN = mean(lifeExp), SD = sd(lifeExp))
-
-knitr::kable(STAT_year) # life expectation statistic for each year
-knitr::kable(STAT_continent) # life expectation statistic for each continent
+                                     MEAN = mean(lifeExp), SD = sd(lifeExp), 
+                                     Q1 = quantile(lifeExp,probs=0.25), Q2 = quantile(lifeExp,probs=0.5),
+                                     Q3 = quantile(lifeExp,probs=0.75))
+knitr::kable(STAT_year_continent) # life expectation statistic for each year and continent
 ```
 
 
