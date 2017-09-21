@@ -11,7 +11,6 @@ output: github_document
 ```{r}
 suppressPackageStartupMessages(library(tidyverse)) 
 suppressPackageStartupMessages(library(gapminder))
-suppressPackageStartupMessages(library(knitr))
 knitr::opts_chunk$set(fig.width=4, fig.height=3)
 ```
 
@@ -30,16 +29,11 @@ str(gapminder)
 
 - How many variables/columns?
     + Answer: **6** (see the below resut)
-
-```{r}
-ncol(gapminder)
-```
-
 - How many rows/observations?
     + Answer: **1704** (see the below resut)
 
 ```{r}
-nrow(gapminder)
+c(ncol(gapminder), nrow(gapminder))
 ```
 
 - Can you get these facts about “extent” or “size” in more than one way? Can you imagine different functions being useful in different contexts?
@@ -65,14 +59,14 @@ typeof(c(ncol(gapminder), nrow(gapminder)))
   
 ```{r}
 STAT_year <- gapminder %>% group_by(year) %>%
-                           summarize(MAX=max(lifeExp), MIN=min(lifeExp), 
-                                     MEAN=mean(lifeExp), SD=sd(lifeExp))
+                           summarize(MAX = max(lifeExp), MIN = min(lifeExp), 
+                                     MEAN = mean(lifeExp), SD = sd(lifeExp))
 STAT_continent <- gapminder %>% group_by(continent) %>%
-                           summarize(MAX=max(lifeExp), MIN=min(lifeExp), 
-                                     MEAN=mean(lifeExp), SD=sd(lifeExp))
+                           summarize(MAX = max(lifeExp), MIN = min(lifeExp), 
+                                     MEAN = mean(lifeExp), SD = sd(lifeExp))
 
-kable(STAT_year)
-kable(STAT_continent)
+knitr::kable(STAT_year) # life expectation statistic for each year
+knitr::kable(STAT_continent) # life expectation statistic for each continent
 ```
 
 

@@ -8,7 +8,6 @@ September 21, 2017
 ``` r
 suppressPackageStartupMessages(library(tidyverse)) 
 suppressPackageStartupMessages(library(gapminder))
-suppressPackageStartupMessages(library(knitr))
 knitr::opts_chunk$set(fig.width=4, fig.height=3)
 ```
 
@@ -33,21 +32,14 @@ str(gapminder)
 
 -   How many variables/columns?
     -   Answer: **6** (see the below resut)
-
-``` r
-ncol(gapminder)
-```
-
-    ## [1] 6
-
 -   How many rows/observations?
     -   Answer: **1704** (see the below resut)
 
 ``` r
-nrow(gapminder)
+c(ncol(gapminder), nrow(gapminder))
 ```
 
-    ## [1] 1704
+    ## [1]    6 1704
 
 -   Can you get these facts about “extent” or “size” in more than one way? Can you imagine different functions being useful in different contexts?
     -   Answer: I also can use the *str* function to get the numbers of variables and rows (see the first result). As for using different functions, the data types of the *ncol* function and the *nrow* function are *integar* (see the bellow result), so these functions can be used when I need to compute something from the data size (see the bellow example: computing the total number of components).
@@ -77,13 +69,13 @@ typeof(c(ncol(gapminder), nrow(gapminder)))
 
 ``` r
 STAT_year <- gapminder %>% group_by(year) %>%
-                           summarize(MAX=max(lifeExp), MIN=min(lifeExp), 
-                                     MEAN=mean(lifeExp), SD=sd(lifeExp))
+                           summarize(MAX = max(lifeExp), MIN = min(lifeExp), 
+                                     MEAN = mean(lifeExp), SD = sd(lifeExp))
 STAT_continent <- gapminder %>% group_by(continent) %>%
-                           summarize(MAX=max(lifeExp), MIN=min(lifeExp), 
-                                     MEAN=mean(lifeExp), SD=sd(lifeExp))
+                           summarize(MAX = max(lifeExp), MIN = min(lifeExp), 
+                                     MEAN = mean(lifeExp), SD = sd(lifeExp))
 
-kable(STAT_year)
+knitr::kable(STAT_year) # life expectation statistic for each year
 ```
 
 |  year|     MAX|     MIN|      MEAN|        SD|
@@ -102,7 +94,7 @@ kable(STAT_year)
 |  2007|  82.603|  39.613|  67.00742|  12.07302|
 
 ``` r
-kable(STAT_continent)
+knitr::kable(STAT_continent) # life expectation statistic for each continent
 ```
 
 | continent |     MAX|     MIN|      MEAN|         SD|
@@ -162,4 +154,4 @@ Adapt exercises from the chapters in the "Explore" section of [R for Data Scienc
 
 > One problem which I've suffered from is that I do not understand the exact meaning of *class*. Frankly speaking, I am not sure my answer for *class* is correct or not.
 >
-> Using *kable* is the most easiest thing although I haven't learn in class. Also the tables modified by this function look tidy. I think it is pretty useful when using markdown.
+> Using the function *kable* is the most easiest thing although I haven't learn in class. Also the tables modified by this function look tidy. I think it is pretty useful when using markdown.
