@@ -1,30 +1,23 @@
-hw02\_yeonuk
+hw02\_yeonuk: Explore Gapminder and use dplyr
 ================
 Yeonuk
 September 21, 2017
 
-FYI
----
-
-> Homework 02: Explore Gapminder and use dplyr
->
-> All the contents are made by R markdown.
-
-### 1. Bring rectangular data in
+#### 1. Bring rectangular data in
 
 ``` r
 suppressPackageStartupMessages(library(tidyverse)) 
 suppressPackageStartupMessages(library(gapminder))
+suppressPackageStartupMessages(library(knitr))
 knitr::opts_chunk$set(fig.width=4, fig.height=3)
 ```
 
-### 2. Smell test the data
+#### 2. Smell test the data
 
 -   Is it a data.frame, a matrix, a vector, a list?
--   Answer: **data.frame** (Please see the below resut)
-
+    -   Answer: **data.frame** (see the below resut)
 -   What’s its class?
--   Answer: **tbl\_df** and **tbl** (Please see the below resut)
+    -   Answer: **tbl\_df** and **tbl** (see the below resut)
 
 ``` r
 str(gapminder)
@@ -39,7 +32,7 @@ str(gapminder)
     ##  $ gdpPercap: num  779 821 853 836 740 ...
 
 -   How many variables/columns?
--   Answer: **6** (Please see the below resut)
+    -   Answer: **6** (see the below resut)
 
 ``` r
 ncol(gapminder)
@@ -48,7 +41,7 @@ ncol(gapminder)
     ## [1] 6
 
 -   How many rows/observations?
--   Answer: **1704** (Please see the below resut)
+    -   Answer: **1704** (see the below resut)
 
 ``` r
 nrow(gapminder)
@@ -57,35 +50,70 @@ nrow(gapminder)
     ## [1] 1704
 
 -   Can you get these facts about “extent” or “size” in more than one way? Can you imagine different functions being useful in different contexts?
--   Answer: I can use *str* function to get the number of variables and rows (Please see the above result). The data types of *ncol* and *nrow* are *integar*, so these functions can be used when I need to compute something from the data size (Please see the bellow example).
+    -   Answer: I also can use the *str* function to get the numbers of variables and rows (see the first result). As for using different functions, the data types of the *ncol* function and the *nrow* function are *integar* (see the bellow result), so these functions can be used when I need to compute something from the data size (see the bellow example: computing the total number of components).
 
 ``` r
-typeof(ncol(gapminder))
+typeof(c(ncol(gapminder), nrow(gapminder)))
 ```
 
     ## [1] "integer"
 
 ``` r
-(n_total <- ncol(gapminder)*nrow(gapminder))
+(n_total <- ncol(gapminder)*nrow(gapminder)) # 6 * 1704 = 10224
 ```
 
     ## [1] 10224
 
 -   What data type is each variable?
-
-> Answer:
+    -   Answer: country & continent = *Factor*, year & pop = *int*, lifeExp & gdpPercap = *num* (see the first result)
 
 #### 3. Explore individual variables
 
-Pick **at least** one categorical variable and at least one quantitative variable to explore.
-
+-   Pick **at least** one categorical variable and at least one quantitative variable to explore.
+    -   I used two categorial variables *year, continent* and one quantitative variable *lifeExp*
 -   What are possible values (or range, whichever is appropriate) of each variable?
 -   What values are typical? What's the spread? What's the distribution? Etc., tailored to the variable at hand.
--   Feel free to use summary stats, tables, figures. We're NOT expecting high production value (yet).
+    -   Answer: see the bellow summarized table
 
-#### Explore various plot types
+``` r
+STAT_year <- gapminder %>% group_by(year) %>%
+                           summarize(MAX=max(lifeExp), MIN=min(lifeExp), 
+                                     MEAN=mean(lifeExp), SD=sd(lifeExp))
+STAT_continent <- gapminder %>% group_by(continent) %>%
+                           summarize(MAX=max(lifeExp), MIN=min(lifeExp), 
+                                     MEAN=mean(lifeExp), SD=sd(lifeExp))
 
-See the [`ggplot2` tutorial](https://github.com/jennybc/ggplot2-tutorial), which also uses the `gapminder` data, for ideas.
+kable(STAT_year)
+```
+
+|  year|     MAX|     MIN|      MEAN|        SD|
+|-----:|-------:|-------:|---------:|---------:|
+|  1952|  72.670|  28.801|  49.05762|  12.22596|
+|  1957|  73.470|  30.332|  51.50740|  12.23129|
+|  1962|  73.680|  31.997|  53.60925|  12.09724|
+|  1967|  74.160|  34.020|  55.67829|  11.71886|
+|  1972|  74.720|  35.400|  57.64739|  11.38195|
+|  1977|  76.110|  31.220|  59.57016|  11.22723|
+|  1982|  77.110|  38.445|  61.53320|  10.77062|
+|  1987|  78.670|  39.906|  63.21261|  10.55629|
+|  1992|  79.360|  23.599|  64.16034|  11.22738|
+|  1997|  80.690|  36.087|  65.01468|  11.55944|
+|  2002|  82.000|  39.193|  65.69492|  12.27982|
+|  2007|  82.603|  39.613|  67.00742|  12.07302|
+
+``` r
+kable(STAT_continent)
+```
+
+| continent |     MAX|     MIN|      MEAN|         SD|
+|:----------|-------:|-------:|---------:|----------:|
+| Africa    |  76.442|  23.599|  48.86533|   9.150210|
+| Americas  |  80.653|  37.579|  64.65874|   9.345088|
+| Asia      |  82.603|  28.801|  60.06490|  11.864532|
+| Europe    |  81.757|  43.585|  71.90369|   5.433178|
+| Oceania   |  81.235|  69.120|  74.32621|   3.795611|
+
+#### Explore various plot types & Use *filter()*, *select()* and *%&gt;%*
 
 Make a few plots, probably of the same variable you chose to characterize numerically. Try to explore more than one plot type. **Just as an example** of what I mean:
 
@@ -95,23 +123,33 @@ Make a few plots, probably of the same variable you chose to characterize numeri
 
 You don't have to use all the data in every plot! It's fine to filter down to one country or small handful of countries.
 
-#### Use `filter()`, `select()` and `%>%`
-
-Use `filter()` to create data subsets that you want to plot.
-
-Practice piping together `filter()` and `select()`. Possibly even piping into `ggplot()`.
-
 #### But I want to do more!
 
 *For people who want to take things further.*
 
 Evaluate this code and describe the result. Presumably the analyst's intent was to get the data for Rwanda and Afghanistan. Did they succeed? Why or why not? If not, what is the correct way to do this?
 
-    filter(gapminder, country == c("Rwanda", "Afghanistan"))
+``` r
+filter(gapminder, country == c("Rwanda", "Afghanistan"))
+```
+
+    ## # A tibble: 12 x 6
+    ##        country continent  year lifeExp      pop gdpPercap
+    ##         <fctr>    <fctr> <int>   <dbl>    <int>     <dbl>
+    ##  1 Afghanistan      Asia  1957  30.332  9240934  820.8530
+    ##  2 Afghanistan      Asia  1967  34.020 11537966  836.1971
+    ##  3 Afghanistan      Asia  1977  38.438 14880372  786.1134
+    ##  4 Afghanistan      Asia  1987  40.822 13867957  852.3959
+    ##  5 Afghanistan      Asia  1997  41.763 22227415  635.3414
+    ##  6 Afghanistan      Asia  2007  43.828 31889923  974.5803
+    ##  7      Rwanda    Africa  1952  40.000  2534927  493.3239
+    ##  8      Rwanda    Africa  1962  43.000  3051242  597.4731
+    ##  9      Rwanda    Africa  1972  44.600  3992121  590.5807
+    ## 10      Rwanda    Africa  1982  46.218  5507565  881.5706
+    ## 11      Rwanda    Africa  1992  23.599  7290203  737.0686
+    ## 12      Rwanda    Africa  2002  43.413  7852401  785.6538
 
 Read [What I do when I get a new data set as told through tweets](http://simplystatistics.org/2014/06/13/what-i-do-when-i-get-a-new-data-set-as-told-through-tweets/) from [SimplyStatistics](http://simplystatistics.org) to get some ideas!
-
-Present numerical tables in a more attractive form, such as using `knitr::kable()`.
 
 Use more of the dplyr functions for operating on a single table.
 
@@ -120,30 +158,8 @@ Use more of the dplyr functions for operating on a single table.
 
 Adapt exercises from the chapters in the "Explore" section of [R for Data Science](http://r4ds.had.co.nz) to the Gapminder dataset.
 
-### Report your process
+### Report my process
 
-Reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc. What things were hard, even though you saw them in class? What was easy(-ish) even though we haven't done it in class?
-
-### Submit the assignment
-
-As in Homework 01:
-
-1.  Add the teaching team as collaborators, if you haven't done that already. Their github alias' are:
-
-> vincenzocoia gvdr ksedivyhaley joeybernhardt mynamedaike pgonzaleze derekcho
-
-1.  Write a new issue entitled `hw02 ready for grading`, and tag the above teaching team. Here's a convenient string to copy and paste to tag the team:
-
-> @vincenzocoia @gvdr @ksedivyhaley @joeybernhardt @mynamedaike @pgonzaleze @derekcho
-
-1.  You're done!
-
-### Rubric
-
-Our [general rubric](peer-review01_marking-rubric.html) applies, but also ...
-
-Check minus: There are some mistakes or omissions, such as the number of rows or variables in the data frame. Or maybe no confirmation of its class or that of the variables inside. There are no plots or there's just one type of plot (and its probably a scatterplot). There's no use of `filter()` or `select()`. It's hard to figure out which file I'm supposed to be looking at. Maybe the student forgot to commit and push the figures to GitHub.
-
-Check: Hits all the elements. No obvious mistakes. Pleasant to read. No heroic detective work required. Solid.
-
-Check plus: Some "above and beyond", creativity, etc. You learned something new from reviewing their work and you're eager to incorporate it into your work now. Use of dplyr goes beyond `filter()` and `select()`. The ggplot2 figures are quite diverse. The repo is very organized and it's a breeze to find the file for this homework specifically.
+> One problem which I've suffered from is that I do not understand the exact meaning of *class*. Frankly speaking, I am not sure my answer for *class* is correct or not.
+>
+> Using *kable* is the most easiest thing although I haven't learn in class. Also the tables modified by this function look tidy. I think it is pretty useful when using markdown.
