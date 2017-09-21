@@ -106,7 +106,7 @@ Use more of the dplyr functions for operating on a single table.
   * [`dplyr` functions for a single dataset](block010_dplyr-end-single-table.html)
 
 Adapt exercises from the chapters in the "Explore" section of [R for Data Science](http://r4ds.had.co.nz) to the Gapminder dataset.
-
+ 
 
 
 ### Report my process
