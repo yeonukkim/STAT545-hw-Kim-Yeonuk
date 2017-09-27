@@ -5,7 +5,7 @@ September 26, 2017
 
 ### Report my process
 
-> I just followed the hw02 instruction from bring data to making figures.
+> I just followed the hw02 instruction from bringing data to making figures.
 >
 > One problem which I've suffered from is that I do not understand the exact meaning of *class*. Frankly speaking, I am not sure my answer for *class* is correct or not.
 >
