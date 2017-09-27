@@ -50,7 +50,7 @@ c(ncol(gapminder), nrow(gapminder))
     ## [1]    6 1704
 
 -   Can you get these facts about “extent” or “size” in more than one way? Can you imagine different functions being useful in different contexts?
-    -   Answer: I also can use the *str* function to get the numbers of variables and rows (see the first result). As for using different functions, the data types of the *ncol* function and the *nrow* function are *integar* (see the bellow result), so these functions can be used when I need to compute something from the data size (see the bellow example: computing the total number of components).
+    -   Answer: I also can use the *str* function to get the numbers of variables and rows (see the first result). As for using different functions, the data types of the *ncol* function and the *nrow* function are *integer* (see the bellow result), so these functions can be used when I need to compute something from the data size (see the bellow example: computing the total number of components).
 
 ``` r
 typeof(c(ncol(gapminder), nrow(gapminder)))
