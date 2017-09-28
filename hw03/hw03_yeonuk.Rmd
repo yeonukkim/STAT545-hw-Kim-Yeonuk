@@ -28,7 +28,7 @@ knitr::opts_chunk$set(fig.width=10, fig.height=7)
 
 ### Task 1: Get the maximum and minimum of GDP per capita for all continents. 
 
-- See the table and boxplot. 
+- See the table and boxplot. You can find not only the Max/Min values but also the country and year for the max/min values.
 
 ```{r}
 # extract max and min of gdpPercap
@@ -63,6 +63,8 @@ P1 + geom_boxplot(aes(fill=continent)) +
 ```
 
 ### Task 2: Look at the spread of GDP per capita within the continents.
+
+- See the table and boxplot. 
 ```{r}
 T2 <- gapminder %>% group_by(continent) %>% 
                       summarize(MAX = max(gdpPercap), MIN = min(gdpPercap), 
