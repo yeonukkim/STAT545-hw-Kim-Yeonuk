@@ -5,7 +5,7 @@ September 26, 2017
 
 ### Report my process
 
-> I just followed the hw02 instruction from bringing data to making figures.
+> I just followed the hw02 instruction from bring data to making figures.
 >
 > One problem which I've suffered from is that I do not understand the exact meaning of *class*. Frankly speaking, I am not sure my answer for *class* is correct or not.
 >
@@ -50,7 +50,7 @@ c(ncol(gapminder), nrow(gapminder))
     ## [1]    6 1704
 
 -   Can you get these facts about “extent” or “size” in more than one way? Can you imagine different functions being useful in different contexts?
-    -   Answer: I also can use the *str* function to get the numbers of variables and rows (see the first result). As for using different functions, the data types of the *ncol* function and the *nrow* function are *integer* (see the bellow result), so these functions can be used when I need to compute something from the data size (see the bellow example: computing the total number of components).
+    -   Answer: I also can use the *str* function to get the numbers of variables and rows (see the first result). As for using different functions, the data types of the *ncol* function and the *nrow* function are *integar* (see the bellow result), so these functions can be used when I need to compute something from the data size (see the bellow example: computing the total number of components).
 
 ``` r
 typeof(c(ncol(gapminder), nrow(gapminder)))
