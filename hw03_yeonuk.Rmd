@@ -10,6 +10,7 @@ output: github_document
 ```{r}
 suppressPackageStartupMessages(library(tidyverse)) 
 suppressPackageStartupMessages(library(gapminder))
+
 knitr::opts_chunk$set(fig.width=10, fig.height=6)
 
 ```
@@ -28,6 +29,7 @@ knitr::opts_chunk$set(fig.width=10, fig.height=6)
 ### Task 1: Get the maximum and minimum of GDP per capita for all continents. 
 
 - See the table and boxplot. 
+
 ```{r}
 T10 <- gapminder %>% group_by(continent) %>% 
   summarise(MAX = max(gdpPercap),MIN = min(gdpPercap))
@@ -48,8 +50,6 @@ P1 + geom_boxplot() +
                                 paste(country,year,sep=", "),''), angle=5))
 
 ```
-
-
 
 ### Task 2: Look at the spread of GDP per capita within the continents.
 ```{r}

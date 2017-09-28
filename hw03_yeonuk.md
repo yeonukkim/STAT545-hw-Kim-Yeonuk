@@ -8,6 +8,7 @@ September 28, 2017
 ``` r
 suppressPackageStartupMessages(library(tidyverse)) 
 suppressPackageStartupMessages(library(gapminder))
+
 knitr::opts_chunk$set(fig.width=10, fig.height=6)
 ```
 
