@@ -27,26 +27,35 @@ Homework
 -   See the table and boxplot.
 
 ``` r
+# extract max and min of gdpPercap
 T10 <- gapminder %>% group_by(continent) %>% 
-  summarise(MAX = max(gdpPercap),MIN = min(gdpPercap))
-T11 <- gapminder %>% filter(gdpPercap %in% T10$MAX) %>% 
-  mutate(MAX_info = paste(country, year, sep=", ")) %>% select(MAX_info)
-T12 <- gapminder %>% filter(gdpPercap %in% T10$MIN) %>% 
-  mutate(MIN_info = paste(country, year, sep=", ")) %>% select(MIN_info)
-T1 <- data.frame(T10, T11, T12)
+  summarise(MAX = max(gdpPercap),MIN = min(gdpPercap)) 
 
+# extract country and year which are with max and min of gdpPercap
+T11 <- gapminder %>% filter(gdpPercap %in% T10$MAX) %>% 
+  mutate(MAX_info = paste(country, year, sep=", ")) %>% select(continent, MAX_info) 
+T12 <- gapminder %>% filter(gdpPercap %in% T10$MIN) %>% 
+  mutate(MIN_info = paste(country, year, sep=", ")) %>% select(continent, MIN_info)
+
+# rearrange by name of continent (alphabet)
+T11 <- arrange(T11, continent) 
+T12 <- arrange(T12, continent)
+
+# merge data and make table
+T1 <- data.frame(T10, MAX_info=T11$MAX_info, MIN_info=T12$MIN_info)
 knitr::kable(T1)  
 ```
 
 | continent |        MAX|         MIN| MAX\_info           | MIN\_info                    |
 |:----------|----------:|-----------:|:--------------------|:-----------------------------|
-| Africa    |   21951.21|    241.1659| Australia, 2007     | Australia, 1952              |
-| Americas  |   42951.65|   1201.6372| Kuwait, 1957        | Bosnia and Herzegovina, 1952 |
-| Asia      |  113523.13|    331.0000| Libya, 1977         | Congo, Dem. Rep., 2002       |
-| Europe    |   49357.19|    973.5332| Norway, 2007        | Haiti, 2007                  |
-| Oceania   |   34435.37|  10039.5956| United States, 2007 | Myanmar, 1952                |
+| Africa    |   21951.21|    241.1659| Libya, 1977         | Congo, Dem. Rep., 2002       |
+| Americas  |   42951.65|   1201.6372| United States, 2007 | Haiti, 2007                  |
+| Asia      |  113523.13|    331.0000| Kuwait, 1957        | Myanmar, 1952                |
+| Europe    |   49357.19|    973.5332| Norway, 2007        | Bosnia and Herzegovina, 1952 |
+| Oceania   |   34435.37|  10039.5956| Australia, 2007     | Australia, 1952              |
 
 ``` r
+#drawing boxplot with texts (country, year) on max and min points
 P1 <- gapminder %>% ggplot(aes(continent, gdpPercap))
 P1 + geom_boxplot() +
      geom_text(aes(label=ifelse(gdpPercap %in% c(T1$MAX,T1$MIN), 
