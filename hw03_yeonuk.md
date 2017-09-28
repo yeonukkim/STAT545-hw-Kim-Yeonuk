@@ -8,7 +8,7 @@ September 28, 2017
 ``` r
 suppressPackageStartupMessages(library(tidyverse)) 
 suppressPackageStartupMessages(library(gapminder))
-knitr::opts_chunk$set(fig.width=8, fig.height=5)
+knitr::opts_chunk$set(fig.width=10, fig.height=6)
 ```
 
 Report my process
@@ -53,8 +53,6 @@ P1 + geom_boxplot() +
 ```
 
 ![](hw03_yeonuk_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-3-1.png)
-
-=======
 
 ### Task 2: Look at the spread of GDP per capita within the continents.
 
