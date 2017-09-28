@@ -9,19 +9,7 @@ September 28, 2017
 suppressPackageStartupMessages(library(tidyverse)) 
 suppressPackageStartupMessages(library(gapminder))
 knitr::opts_chunk$set(fig.width=8, fig.height=5)
-
-head(gapminder)
 ```
-
-    ## # A tibble: 6 x 6
-    ##       country continent  year lifeExp      pop gdpPercap
-    ##        <fctr>    <fctr> <int>   <dbl>    <int>     <dbl>
-    ## 1 Afghanistan      Asia  1952  28.801  8425333  779.4453
-    ## 2 Afghanistan      Asia  1957  30.332  9240934  820.8530
-    ## 3 Afghanistan      Asia  1962  31.997 10267083  853.1007
-    ## 4 Afghanistan      Asia  1967  34.020 11537966  836.1971
-    ## 5 Afghanistan      Asia  1972  36.088 13079460  739.9811
-    ## 6 Afghanistan      Asia  1977  38.438 14880372  786.1134
 
 Report my process
 -----------------
@@ -65,6 +53,8 @@ P1 + geom_boxplot() +
 ```
 
 ![](hw03_yeonuk_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-3-1.png)
+
+=======
 
 ### Task 2: Look at the spread of GDP per capita within the continents.
 
