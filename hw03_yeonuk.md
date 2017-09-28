@@ -8,8 +8,8 @@ September 28, 2017
 ``` r
 suppressPackageStartupMessages(library(tidyverse)) 
 suppressPackageStartupMessages(library(gapminder))
-
-knitr::opts_chunk$set(fig.width=10, fig.height=6)
+suppressPackageStartupMessages(library(cowplot))
+knitr::opts_chunk$set(fig.width=10, fig.height=7)
 ```
 
 Report my process
@@ -57,14 +57,48 @@ knitr::kable(T1)
 ``` r
 #drawing boxplot with texts (country, year) on max and min points
 P1 <- gapminder %>% ggplot(aes(continent, gdpPercap))
-P1 + geom_boxplot() +
+P1 + geom_boxplot(aes(fill=continent)) +
      geom_text(aes(label=ifelse(gdpPercap %in% c(T1$MAX,T1$MIN), 
-                                paste(country,year,sep=", "),''), angle=5))
+                                paste(country,year,sep=", \n"),''), angle=5)) +
+     scale_y_continuous(limits=c(-10000,120000)) +
+     theme_light()+ labs(y="GDP per capita", title="GDP BoxPlot for each continent with max & min info")
 ```
 
 ![](hw03_yeonuk_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-3-1.png)
 
 ### Task 2: Look at the spread of GDP per capita within the continents.
+
+``` r
+T2 <- gapminder %>% group_by(continent) %>% 
+                      summarize(MAX = max(gdpPercap), MIN = min(gdpPercap), 
+                      MEAN = mean(gdpPercap), SD = sd(gdpPercap), 
+                      Q1 = quantile(gdpPercap,probs=0.25), 
+                      Q2 = quantile(gdpPercap,probs=0.5),
+                      Q3 = quantile(gdpPercap,probs=0.75))
+knitr::kable(T2)  
+```
+
+| continent |        MAX|         MIN|       MEAN|         SD|         Q1|         Q2|         Q3|
+|:----------|----------:|-----------:|----------:|----------:|----------:|----------:|----------:|
+| Africa    |   21951.21|    241.1659|   2193.755|   2827.930|    761.247|   1192.138|   2377.417|
+| Americas  |   42951.65|   1201.6372|   7136.110|   6396.764|   3427.779|   5465.510|   7830.210|
+| Asia      |  113523.13|    331.0000|   7902.150|  14045.373|   1056.993|   2646.787|   8549.256|
+| Europe    |   49357.19|    973.5332|  14469.476|   9355.213|   7213.085|  12081.749|  20461.386|
+| Oceania   |   34435.37|  10039.5956|  18621.609|   6358.983|  14141.859|  17983.304|  22214.117|
+
+``` r
+p2 <- gapminder %>% ggplot(aes(gdpPercap)) 
+      
+p20 <- p2 + geom_freqpoly(aes(gdpPercap,..density..,colour=continent), binwidth = 1800) +
+      labs(x="GDP per capita", title="GDP histogram for each continent") +theme_bw()
+p21 <- p2 + theme_bw() + facet_wrap( ~ continent) + 
+      geom_histogram(aes(gdpPercap,..density..), bins =65, colour="blue") +
+      labs(x="GDP per capita") +theme_bw()
+
+plot_grid(p20, p21, ncol = 1, nrow = 2)
+```
+
+![](hw03_yeonuk_files/figure-markdown_github-ascii_identifiers/set(fig.height=12)-1.png)
 
 ### Task 4: How is life expectancy changing over time on different continents?
 
