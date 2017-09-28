@@ -8,7 +8,11 @@ September 28, 2017
 ``` r
 suppressPackageStartupMessages(library(tidyverse)) 
 suppressPackageStartupMessages(library(gapminder))
+<<<<<<< HEAD
 knitr::opts_chunk$set(fig.width=10, fig.height=6)
+=======
+knitr::opts_chunk$set(fig.width=8, fig.height=5)
+>>>>>>> 9e92206f1550a17546fb1ede58d8a7c2dfa9dcd6
 ```
 
 Report my process
@@ -54,6 +58,11 @@ P1 + geom_boxplot() +
 
 ![](hw03_yeonuk_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-3-1.png)
 
+<<<<<<< HEAD
+=======
+=======
+
+>>>>>>> 9e92206f1550a17546fb1ede58d8a7c2dfa9dcd6
 ### Task 2: Look at the spread of GDP per capita within the continents.
 
 ### Task 4: How is life expectancy changing over time on different continents?
