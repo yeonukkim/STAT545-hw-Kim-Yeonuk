@@ -1,10 +1,21 @@
 ---
 title: "hw02_yeonuk: Explore Gapminder and use dplyr"
 author: "Yeonuk"
-date: "September 21, 2017"
+date: "September 26, 2017"
 output: github_document
 
 ---
+### Report my process
+
+>
+> I just followed the hw02 instruction from bring data to making figures.  
+>
+> One problem which I've suffered from is that I do not understand the exact meaning of *class*. Frankly speaking, I am not sure my answer for *class* is correct or not. 
+> 
+> Using the function *kable* is the most easiest thing although I haven't learn in class. Also the tables modified by this function look tidy. I think it is pretty useful when using markdown.
+> 
+
+
 
 #### 1. Bring rectangular data in
 
@@ -51,60 +62,78 @@ typeof(c(ncol(gapminder), nrow(gapminder)))
 #### 3. Explore individual variables
 
 - Pick __at least__ one categorical variable and at least one quantitative variable to explore.
-    + I used two categorial variables *year, continent* and one quantitative variable *lifeExp*
+    + I used two categorial variables *year, continent (select Asia only)* and one quantitative variable *lifeExp*
   
 - What are possible values (or range, whichever is appropriate) of each variable?
 - What values are typical? What's the spread? What's the distribution? Etc., tailored to the variable at hand.
     + Answer: see the bellow summarized table
   
 ```{r}
-STAT_year_continent <- gapminder %>% group_by(year, continent) %>%
-                           summarize(MAX = max(lifeExp), MIN = min(lifeExp), 
-                                     MEAN = mean(lifeExp), SD = sd(lifeExp), 
-                                     Q1 = quantile(lifeExp,probs=0.25), Q2 = quantile(lifeExp,probs=0.5),
-                                     Q3 = quantile(lifeExp,probs=0.75))
-knitr::kable(STAT_year_continent) # life expectation statistic for each year and continent
+STAT <- gapminder %>% group_by(year) %>% filter(continent=="Asia") %>%
+                      summarize(MAX = max(lifeExp), MIN = min(lifeExp), 
+                      MEAN = mean(lifeExp), SD = sd(lifeExp), 
+                      Q1 = quantile(lifeExp,probs=0.25), 
+                      Q2 = quantile(lifeExp,probs=0.5),
+                      Q3 = quantile(lifeExp,probs=0.75))
+knitr::kable(STAT) # life expectation statistic for each year in Asia
 ```
 
 
-#### Explore various plot types & Use *filter()*, *select()* and *%>%*
+#### 4. Explore various plot types & Use *filter()*, *select()* and *%>%*
 
 Make a few plots, probably of the same variable you chose to characterize numerically. Try to explore more than one plot type. **Just as an example** of what I mean:
 
   * A scatterplot of two quantitative variables.
+
+```{r}
+p1 <- gapminder %>% filter(year<1980) %>% 
+  ggplot(aes(gdpPercap, lifeExp, colour=continent))
+p2 <- gapminder %>% filter(year>=1980) %>% 
+  ggplot(aes(gdpPercap, lifeExp, colour=continent))
+p1+geom_point(alpha=0.3) + scale_x_log10() + geom_smooth(method="lm") # before 1980
+p2+geom_point(alpha=0.3) + scale_x_log10() + geom_smooth(method="lm") # after 1980
+```
+
   * A plot of one quantitative variable. Maybe a histogram or densityplot or frequency polygon.
+  
+```{r}
+hist(gapminder$lifeExp)
+```
+
+
   * A plot of one quantitative variable and one categorical. Maybe boxplots for several continents or countries.
+  
+```{r, fig.width=10}
+p3 <- gapminder %>% filter(continent %in% c("Americas")) %>% 
+  group_by(country) %>% filter(median(lifeExp)<65) %>%
+  ggplot(aes(country, lifeExp))
+p4 <- gapminder %>% filter(continent %in% c("Americas")) %>% 
+  group_by(country) %>% filter(median(lifeExp)>=65 & median(lifeExp)<70) %>%
+  ggplot(aes(country, lifeExp))
+p5 <- gapminder %>% filter(continent %in% c("Americas")) %>% 
+  group_by(country) %>% filter(median(lifeExp)>=70) %>%
+  ggplot(aes(country, lifeExp))
+p3+geom_boxplot() # American countries with low lifeExp
+p4+geom_boxplot() # American countries with intermediate lifeExp
+p5+geom_boxplot() # American countries with high lifeExp
+```
 
-You don't have to use all the data in every plot! It's fine to filter down to one country or small handful of countries.
 
-
-#### But I want to do more!
+#### 5. But I want to do more!
 
 *For people who want to take things further.*
 
 Evaluate this code and describe the result. Presumably the analyst's intent was to get the data for Rwanda and Afghanistan. Did they succeed? Why or why not? If not, what is the correct way to do this?
 
+> filter(gapminder, country == c("Rwanda", "Afghanistan"))
+
+**The above code is wrong. One country variable cannot be same with the vector. The correct result can come from the code I made:** 
+
 ```{r}
-filter(gapminder, country == c("Rwanda", "Afghanistan"))
+a <- filter(gapminder, country %in% c("Rwanda", "Afghanistan"))
+knitr::kable(a)
+
 ```
 
-Read [What I do when I get a new data set as told through tweets](http://simplystatistics.org/2014/06/13/what-i-do-when-i-get-a-new-data-set-as-told-through-tweets/) from [SimplyStatistics](http://simplystatistics.org) to get some ideas!
 
-
-Use more of the dplyr functions for operating on a single table.
-
-  * [Introduction to dplyr](block009_dplyr-intro.html)
-  * [`dplyr` functions for a single dataset](block010_dplyr-end-single-table.html)
-
-Adapt exercises from the chapters in the "Explore" section of [R for Data Science](http://r4ds.had.co.nz) to the Gapminder dataset.
- 
-
-
-### Report my process
-
-> 
-> One problem which I've suffered from is that I do not understand the exact meaning of *class*. Frankly speaking, I am not sure my answer for *class* is correct or not. 
-> 
-> Using the function *kable* is the most easiest thing although I haven't learn in class. Also the tables modified by this function look tidy. I think it is pretty useful when using markdown.
-> 
 
