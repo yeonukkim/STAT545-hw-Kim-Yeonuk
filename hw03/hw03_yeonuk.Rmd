@@ -114,6 +114,8 @@ OC <- Data4 %>% filter(continent == "Oceania")
 
 Task4 <- cbind(AF,AM,AS,EU,OC)
 Task4 <- Task4[-c(1,5,6,9,10,13,14,17,18)]
+
+
 names(Task4) <- c("year", "AF_mean", "AF_SD", "AM_mean", "AM_SD", 
                   "AS_mean", "AS_SD", "EU_mean", "EU_SD", "OC_mean", "OC_SD")
 rm(AF, AM, AS, EU,OC)
@@ -136,6 +138,9 @@ plot_grid(Plot40, Plot41, ncol = 1, nrow = 2)
 
 ### Task 6: Find countries with interesting stories. Open-ended and, therefore, hard. 
 ```{r}
+Data4 <- gapminder %>% filter(country %in% c("China", "Japan", "Korea, rep."))
+
+Plot60 <- 
 
 ```
 
