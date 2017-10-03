@@ -11,8 +11,7 @@ output: github_document
 suppressPackageStartupMessages(library(tidyverse)) 
 suppressPackageStartupMessages(library(gapminder))
 suppressPackageStartupMessages(library(cowplot))
-suppressPackageStartupMessages(library(grid))
-suppressPackageStartupMessages(library(gridExtra))
+
 knitr::opts_chunk$set(fig.width=10, fig.height=7)
 
 ```
@@ -72,7 +71,7 @@ Plot1
 
 ### Task 2: Look at the spread of GDP per capita within the continents.
 
-- See the table and boxplot. 
+- See the table and boxplot. Distributions of GDP per capita for each continent looks interesting. For example, mean value of Africa is most small and at the same time SD also small. 
 ```{r}
 Task2 <- gapminder %>% group_by(continent) %>% 
                       summarize(MAX = max(gdpPercap), MIN = min(gdpPercap), 
@@ -102,6 +101,8 @@ plot_grid(Plot20, Plot21, ncol = 1, nrow = 2)
 
 
 ### Task 4: How is life expectancy changing over time on different continents?
+
+- See the table and figure. The mean value of life expectancies for each continent have been increased during last 50 years. Most continent except Africa, SD values are decreased meaning lifeExp differences between countries in a continent was reduced. As for Africa, gaps between high lifeExp countries and low lifeExp country have been increased.
 ```{r, set(fig.height=30)}
 Data4 <- gapminder %>% group_by(continent, year) %>%
   summarise(M = mean(lifeExp), SD = sqrt(var(lifeExp)))
@@ -116,14 +117,16 @@ Task4 <- cbind(AF,AM,AS,EU,OC)
 Task4 <- Task4[-c(1,5,6,9,10,13,14,17,18)]
 
 
-names(Task4) <- c("year", "AF_mean", "AF_SD", "AM_mean", "AM_SD", 
-                  "AS_mean", "AS_SD", "EU_mean", "EU_SD", "OC_mean", "OC_SD")
+names(Task4) <- c("year", "AF.mean", "AF.SD", "AM.mean", "AM.SD", 
+                  "AS.mean", "AS.SD", "EU.mean", "EU_SD", "OC.mean", "OC.SD")
 rm(AF, AM, AS, EU,OC)
 
-knitr::kable(Task4)  
+Task4 <- round(Task4, digits = 2)
+
+knitr::kable(Task4, )  
 
 Plot40 <- ggplot(Data4, aes(year,M,colour=continent)) +
-    geom_errorbar(aes(ymin=M-SD/2, ymax=M+SD/2), colour="black", width=.5, alpha=0.5) +
+    geom_errorbar(aes(ymin=M-SD/2, ymax=M+SD/2), colour="black", width=1, alpha=0.8) +
     geom_line() +
     geom_point() +
     labs(y="Annual mean for Life Exp with SD") +theme_bw()
@@ -136,12 +139,25 @@ Plot41 <- gapminder %>% ggplot(aes(x=year,y=lifeExp, colour=continent)) +
 plot_grid(Plot40, Plot41, ncol = 1, nrow = 2)
 ```
 
-### Task 6: Find countries with interesting stories. Open-ended and, therefore, hard. 
-```{r}
-Data4 <- gapminder %>% filter(country %in% c("China", "Japan", "Korea, rep."))
+### Task 6: Find countries with interesting stories: 11 countries which are G20 and also OECD member with high GDP.
 
-Plot60 <- 
+- I would like to find some relationships between life expectancy and population. So, I made an index (GPLI, see the below code). Interesting thing is that GPLI value is stable except Australia, Canada, and America where immigration rates are high. In other words, I can infer that increase in population in these three countries have not been affected by health tech but by immigration.
+
+```{r}
+Data6 <- gapminder %>% 
+  filter(country %in% c('Australia',  'Canada', 'France', 'Germany',   'Italy', 'Japan', 
+                        'Korea, Rep.',  'United Kingdom', 'United States')) %>%
+  group_by(country) %>%
+  mutate(Npop = pop/mean(pop), 
+         NlifeExp = lifeExp/mean(lifeExp)) %>% #Normalizing the changes by dividing mean changes
+  mutate(GPLI = Npop/NlifeExp)     # GPLI = Gapminder Population LifeExp index (I just made for this homework.)
+
+Data6 %>% ggplot(aes(year,GPLI,size=gdpPercap)) + 
+  geom_point(alpha=0.8) +geom_smooth() +
+  facet_wrap(~ country)  + ylim(0,2) +theme_bw() + theme(axis.text.x = element_text(angle=90)) 
+
 
 ```
+
 
 

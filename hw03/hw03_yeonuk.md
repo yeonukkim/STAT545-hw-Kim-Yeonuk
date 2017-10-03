@@ -7,25 +7,9 @@ September 28, 2017
 
 ``` r
 suppressPackageStartupMessages(library(tidyverse)) 
-```
-
-    ## Warning: package 'dplyr' was built under R version 3.4.2
-
-``` r
 suppressPackageStartupMessages(library(gapminder))
 suppressPackageStartupMessages(library(cowplot))
-```
 
-    ## Warning: package 'cowplot' was built under R version 3.4.2
-
-``` r
-suppressPackageStartupMessages(library(grid))
-suppressPackageStartupMessages(library(gridExtra))
-```
-
-    ## Warning: package 'gridExtra' was built under R version 3.4.2
-
-``` r
 knitr::opts_chunk$set(fig.width=10, fig.height=7)
 ```
 
@@ -92,7 +76,7 @@ Plot1
 
 ### Task 2: Look at the spread of GDP per capita within the continents.
 
--   See the table and boxplot.
+-   See the table and boxplot. Distributions of GDP per capita for each continent looks interesting. For example, mean value of Africa is most small and at the same time SD also small.
 
 ``` r
 Task2 <- gapminder %>% group_by(continent) %>% 
@@ -131,6 +115,8 @@ plot_grid(Plot20, Plot21, ncol = 1, nrow = 2)
 
 ### Task 4: How is life expectancy changing over time on different continents?
 
+-   See the table and figure. The mean value of life expectancies for each continent have been increased during last 50 years. Most continent except Africa, SD values are decreased meaning lifeExp differences between countries in a continent was reduced. As for Africa, gaps between high lifeExp countries and low lifeExp country have been increased.
+
 ``` r
 Data4 <- gapminder %>% group_by(continent, year) %>%
   summarise(M = mean(lifeExp), SD = sqrt(var(lifeExp)))
@@ -143,31 +129,35 @@ OC <- Data4 %>% filter(continent == "Oceania")
 
 Task4 <- cbind(AF,AM,AS,EU,OC)
 Task4 <- Task4[-c(1,5,6,9,10,13,14,17,18)]
-names(Task4) <- c("year", "AF_mean", "AF_SD", "AM_mean", "AM_SD", 
-                  "AS_mean", "AS_SD", "EU_mean", "EU_SD", "OC_mean", "OC_SD")
+
+
+names(Task4) <- c("year", "AF.mean", "AF.SD", "AM.mean", "AM.SD", 
+                  "AS.mean", "AS.SD", "EU.mean", "EU_SD", "OC.mean", "OC.SD")
 rm(AF, AM, AS, EU,OC)
 
-knitr::kable(Task4)  
+Task4 <- round(Task4, digits = 2)
+
+knitr::kable(Task4, )  
 ```
 
-|  year|  AF\_mean|    AF\_SD|  AM\_mean|    AM\_SD|  AS\_mean|     AS\_SD|  EU\_mean|    EU\_SD|  OC\_mean|     OC\_SD|
-|-----:|---------:|---------:|---------:|---------:|---------:|----------:|---------:|---------:|---------:|----------:|
-|  1952|  39.13550|  5.151581|  53.27984|  9.326082|  46.31439|   9.291751|  64.40850|  6.361088|   69.2550|  0.1909188|
-|  1957|  41.26635|  5.620123|  55.96028|  9.033192|  49.31854|   9.635429|  66.70307|  5.295805|   70.2950|  0.0494975|
-|  1962|  43.31944|  5.875364|  58.39876|  8.503544|  51.56322|   9.820632|  68.53923|  4.302500|   71.0850|  0.2192031|
-|  1967|  45.33454|  6.082673|  60.41092|  7.909171|  54.66364|   9.650965|  69.73760|  3.799729|   71.3100|  0.2969848|
-|  1972|  47.45094|  6.416258|  62.39492|  7.323017|  57.31927|   9.722700|  70.77503|  3.240576|   71.9100|  0.0282843|
-|  1977|  49.58042|  6.808197|  64.39156|  7.069496|  59.61056|  10.022197|  71.93777|  3.121030|   72.8550|  0.8980256|
-|  1982|  51.59287|  7.375940|  66.22884|  6.720834|  62.61794|   8.535221|  72.80640|  3.218260|   74.2900|  0.6363961|
-|  1987|  53.34479|  7.864089|  68.09072|  5.801929|  64.85118|   8.203792|  73.64217|  3.169680|   75.3200|  1.4142136|
-|  1992|  53.62958|  9.461071|  69.56836|  5.167104|  66.53721|   8.075549|  74.44010|  3.209781|   76.9450|  0.8697413|
-|  1997|  53.59827|  9.103387|  71.15048|  4.887584|  68.02052|   8.091171|  75.50517|  3.104677|   78.1900|  0.9050967|
-|  2002|  53.32523|  9.586496|  72.42204|  4.799705|  69.23388|   8.374595|  76.70060|  2.922180|   79.7400|  0.8909545|
-|  2007|  54.80604|  9.630781|  73.60812|  4.440948|  70.72848|   7.963724|  77.64860|  2.979813|   80.7195|  0.7290271|
+|  year|  AF.mean|  AF.SD|  AM.mean|  AM.SD|  AS.mean|  AS.SD|  EU.mean|  EU\_SD|  OC.mean|  OC.SD|
+|-----:|--------:|------:|--------:|------:|--------:|------:|--------:|-------:|--------:|------:|
+|  1952|    39.14|   5.15|    53.28|   9.33|    46.31|   9.29|    64.41|    6.36|    69.25|   0.19|
+|  1957|    41.27|   5.62|    55.96|   9.03|    49.32|   9.64|    66.70|    5.30|    70.30|   0.05|
+|  1962|    43.32|   5.88|    58.40|   8.50|    51.56|   9.82|    68.54|    4.30|    71.09|   0.22|
+|  1967|    45.33|   6.08|    60.41|   7.91|    54.66|   9.65|    69.74|    3.80|    71.31|   0.30|
+|  1972|    47.45|   6.42|    62.39|   7.32|    57.32|   9.72|    70.78|    3.24|    71.91|   0.03|
+|  1977|    49.58|   6.81|    64.39|   7.07|    59.61|  10.02|    71.94|    3.12|    72.85|   0.90|
+|  1982|    51.59|   7.38|    66.23|   6.72|    62.62|   8.54|    72.81|    3.22|    74.29|   0.64|
+|  1987|    53.34|   7.86|    68.09|   5.80|    64.85|   8.20|    73.64|    3.17|    75.32|   1.41|
+|  1992|    53.63|   9.46|    69.57|   5.17|    66.54|   8.08|    74.44|    3.21|    76.94|   0.87|
+|  1997|    53.60|   9.10|    71.15|   4.89|    68.02|   8.09|    75.51|    3.10|    78.19|   0.91|
+|  2002|    53.33|   9.59|    72.42|   4.80|    69.23|   8.37|    76.70|    2.92|    79.74|   0.89|
+|  2007|    54.81|   9.63|    73.61|   4.44|    70.73|   7.96|    77.65|    2.98|    80.72|   0.73|
 
 ``` r
 Plot40 <- ggplot(Data4, aes(year,M,colour=continent)) +
-    geom_errorbar(aes(ymin=M-SD/2, ymax=M+SD/2), colour="black", width=.5, alpha=0.5) +
+    geom_errorbar(aes(ymin=M-SD/2, ymax=M+SD/2), colour="black", width=1, alpha=0.8) +
     geom_line() +
     geom_point() +
     labs(y="Annual mean for Life Exp with SD") +theme_bw()
@@ -182,4 +172,24 @@ plot_grid(Plot40, Plot41, ncol = 1, nrow = 2)
 
 ![](hw03_yeonuk_files/figure-markdown_github-ascii_identifiers/set(fig.height=30)-1.png)
 
-### Task 6: Find countries with interesting stories. Open-ended and, therefore, hard.
+### Task 6: Find countries with interesting stories: 11 countries which are G20 and also OECD member with high GDP.
+
+-   I would like to find some relationships between life expectancy and population. So, I made an index (GPLI, see the below code). Interesting thing is that GPLI value is stable except Australia, Canada, and America where immigration rates are high. In other words, I can infer that increase in population in these three countries have not been affected by health tech but by immigration.
+
+``` r
+Data6 <- gapminder %>% 
+  filter(country %in% c('Australia',  'Canada', 'France', 'Germany',   'Italy', 'Japan', 
+                        'Korea, Rep.',  'United Kingdom', 'United States')) %>%
+  group_by(country) %>%
+  mutate(Npop = pop/mean(pop), 
+         NlifeExp = lifeExp/mean(lifeExp)) %>% #Normalizing the changes by dividing mean changes
+  mutate(GPLI = Npop/NlifeExp)     # GPLI = Gapminder Population LifeExp index (I just made for this homework.)
+
+Data6 %>% ggplot(aes(year,GPLI,size=gdpPercap)) + 
+  geom_point(alpha=0.8) +geom_smooth() +
+  facet_wrap(~ country)  + ylim(0,2) +theme_bw() + theme(axis.text.x = element_text(angle=90)) 
+```
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](hw03_yeonuk_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-5-1.png)
