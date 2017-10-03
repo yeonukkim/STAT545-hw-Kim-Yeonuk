@@ -11,6 +11,8 @@ output: github_document
 suppressPackageStartupMessages(library(tidyverse)) 
 suppressPackageStartupMessages(library(gapminder))
 suppressPackageStartupMessages(library(cowplot))
+suppressPackageStartupMessages(library(grid))
+suppressPackageStartupMessages(library(gridExtra))
 knitr::opts_chunk$set(fig.width=10, fig.height=7)
 
 ```
@@ -32,67 +34,104 @@ knitr::opts_chunk$set(fig.width=10, fig.height=7)
 
 ```{r}
 # extract max and min of gdpPercap
-T10 <- gapminder %>% group_by(continent) %>% 
+data10 <- gapminder %>% group_by(continent) %>% 
   summarise(MAX = max(gdpPercap),MIN = min(gdpPercap)) 
 
 # extract country and year which are with max and min of gdpPercap
-T11 <- gapminder %>% filter(gdpPercap %in% T10$MAX) %>% 
-  mutate(MAX_info = paste(country, year, sep=", ")) %>% select(continent, MAX_info) 
-T12 <- gapminder %>% filter(gdpPercap %in% T10$MIN) %>% 
-  mutate(MIN_info = paste(country, year, sep=", ")) %>% select(continent, MIN_info)
+data11 <- gapminder %>% filter(gdpPercap %in% data10$MAX) %>% 
+  mutate(MAX_info = paste(country, year, sep=", ")) %>% 
+  select(continent, MAX_info) 
+data12 <- gapminder %>% filter(gdpPercap %in% data10$MIN) %>% 
+  mutate(MIN_info = paste(country, year, sep=", ")) %>% 
+  select(continent, MIN_info)
 
 # rearrange by name of continent (alphabet)
-T11 <- arrange(T11, continent) 
-T12 <- arrange(T12, continent)
+data11 <- arrange(data11, continent) 
+data12 <- arrange(data12, continent)
 
 # merge data and make table
-T1 <- data.frame(T10, MAX_info=T11$MAX_info, MIN_info=T12$MIN_info)
-knitr::kable(T1)  
+Task1 <- data.frame(data10, MAX_info=data11$MAX_info, MIN_info=data12$MIN_info)
+
+rm(data10,data11,data12)
+knitr::kable(Task1)
 
 ```
 
 ```{r}
 #drawing boxplot with texts (country, year) on max and min points
-P1 <- gapminder %>% ggplot(aes(continent, gdpPercap))
-P1 + geom_boxplot(aes(fill=continent)) +
-     geom_text(aes(label=ifelse(gdpPercap %in% c(T1$MAX,T1$MIN), 
+Plot1 <- gapminder %>% ggplot(aes(continent, gdpPercap)) +
+     geom_boxplot(aes(fill=continent)) +
+     geom_text(aes(label=ifelse(gdpPercap %in% c(Task1$MAX,Task1$MIN), 
                                 paste(country,year,sep=", \n"),''), angle=5)) +
      scale_y_continuous(limits=c(-10000,120000)) +
-     theme_light()+ labs(y="GDP per capita", title="GDP BoxPlot for each continent with max & min info")
+     theme_light()+ 
+     labs(y="GDP per capita", title="GDP BoxPlot for each continent with max & min info")
 
+Plot1
 ```
 
 ### Task 2: Look at the spread of GDP per capita within the continents.
 
 - See the table and boxplot. 
 ```{r}
-T2 <- gapminder %>% group_by(continent) %>% 
+Task2 <- gapminder %>% group_by(continent) %>% 
                       summarize(MAX = max(gdpPercap), MIN = min(gdpPercap), 
                       MEAN = mean(gdpPercap), SD = sd(gdpPercap), 
                       Q1 = quantile(gdpPercap,probs=0.25), 
                       Q2 = quantile(gdpPercap,probs=0.5),
                       Q3 = quantile(gdpPercap,probs=0.75))
-knitr::kable(T2)  
+knitr::kable(Task2)  
 ```
 
 ```{r, set(fig.height=12)}
-p2 <- gapminder %>% ggplot(aes(gdpPercap)) 
+Plot2 <- gapminder %>% ggplot(aes(gdpPercap)) 
       
-p20 <- p2 + geom_freqpoly(aes(gdpPercap,..density..,colour=continent), binwidth = 1800) +
+Plot20 <- Plot2 + 
+      geom_freqpoly(aes(gdpPercap,..density..,colour=continent), binwidth = 1800) +
       labs(x="GDP per capita", title="GDP histogram for each continent") +theme_bw()
-p21 <- p2 + theme_bw() + facet_wrap( ~ continent) + 
+Plot21 <- Plot2 + 
+      facet_wrap( ~ continent) + 
       geom_histogram(aes(gdpPercap,..density..), bins =65, colour="blue") +
       labs(x="GDP per capita") +theme_bw()
 
-plot_grid(p20, p21, ncol = 1, nrow = 2)
+
+plot_grid(Plot20, Plot21, ncol = 1, nrow = 2)
 
 
 ```
 
 
 ### Task 4: How is life expectancy changing over time on different continents?
-```{r}
+```{r, set(fig.height=30)}
+Data4 <- gapminder %>% group_by(continent, year) %>%
+  summarise(M = mean(lifeExp), SD = sqrt(var(lifeExp)))
 
+AF <- Data4 %>% filter(continent == "Africa")
+AM <- Data4 %>% filter(continent == "Americas")
+AS <- Data4 %>% filter(continent == "Asia") 
+EU <- Data4 %>% filter(continent == "Europe") 
+OC <- Data4 %>% filter(continent == "Oceania") 
+
+Task4 <- cbind(AF,AM,AS,EU,OC)
+Task4 <- Task4[-c(1,5,6,9,10,13,14,17,18)]
+names(Task4) <- c("year", "AF_mean", "AF_SD", "AM_mean", "AM_SD", 
+                  "AS_mean", "AS_SD", "EU_mean", "EU_SD", "OC_mean", "OC_SD")
+rm(AF, AM, AS, EU,OC)
+
+knitr::kable(Task4)  
+
+Plot40 <- ggplot(Data4, aes(year,M,colour=continent)) +
+    geom_errorbar(aes(ymin=M-SD/2, ymax=M+SD/2), colour="black", width=.5, alpha=0.5) +
+    geom_line() +
+    geom_point() +
+    labs(y="Annual mean for Life Exp with SD") +theme_bw()
+
+Plot41 <- gapminder %>% ggplot(aes(x=year,y=lifeExp, colour=continent)) +
+  geom_boxplot(aes(group = year)) +
+  facet_grid(continent ~.) +
+  labs(y="boxplot for Life Exp") +theme_bw()
+
+plot_grid(Plot40, Plot41, ncol = 1, nrow = 2)
 ```
 
 ### Task 6: Find countries with interesting stories. Open-ended and, therefore, hard. 
