@@ -1,0 +1,132 @@
+---
+title: "hw04_yeonuk"
+output: github_document
+---
+
+Package info: I used *tidyverse*, *gapminder*, and *cowplot* (cowplot for plot layout).
+```{r echo=FALSE}
+suppressPackageStartupMessages(library(tidyverse)) 
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(gapminder))
+suppressPackageStartupMessages(library(cowplot))
+```
+
+# 1. General data reshaping and relationship to aggregation
+
+## My choice: Activity #2
+
+### 1.1. Make a table
+- Make a tibble with one row per year and columns for life expectancy for two or more countries.
+- Use *knitr::kable()* to make this table look pretty in your rendered homework.
+
+```{r}
+
+new_lifeExp <- gapminder %>%
+  filter(country %in% c("China", "Korea, Rep.","Japan","Mongolia", "Taiwan")) %>%
+  select(country, year, lifeExp) %>% 
+  group_by(year) %>% 
+  spread(key=country, value=lifeExp)
+knitr::kable(new_lifeExp)
+
+```
+
+### 1.2. Make a figure
+- Take advantage of this new data shape to scatterplot life expectancy for one country against that of another.
+
+```{r}
+P1 <- new_lifeExp %>% ggplot(aes(x = China, y=`Korea, Rep.`, size = year)) + 
+  geom_point() + ggtitle("Life Expectancy") + theme_bw()
+P2 <- new_lifeExp %>% ggplot(aes(x = China, y=Japan, size = year)) + 
+  geom_point() + ggtitle("Life Expectancy") + theme_bw()
+P3 <- new_lifeExp %>% ggplot(aes(x = China, y=Mongolia, size = year)) + 
+  geom_point() + ggtitle("Life Expectancy") + theme_bw()
+P4 <- new_lifeExp %>% ggplot(aes(x = China, y=Taiwan, size = year)) + 
+  geom_point() + ggtitle("Life Expectancy") + theme_bw()
+
+plot_grid(P1,P2,P3,P4, ncol = 2, nrow = 2, label_size = 8)
+```
+
+##### Reflection
+I compared countries in EastAsia. The table column by each country looks useful when we compare time series variables. This table is also useful when making a scatter plot.
+
+
+# 2. Join, merge, look up
+
+## My choice: Activity #1
+Create a second data frame, complementary to Gapminder
+
+- Complementary variables: languages, G20, OECD
+- Countries: "China", "Korea, Rep.","Japan","Mongolia", "Taiwan", "Canada", "Argentina"
+- Overlaped variables with gapminder: country, continent
+
+```{r}
+# making a data frame
+country <- c("China", "Korea, Rep.","Japan","Mongolia", "Taiwan", "Canada", "Argentina")
+continent <- c("Asia","Asia","Asia","Asia","Asia","Americas","Americas")
+languages <- c("Mandarin","Korean","Japanese","Mandarin","Mandarin", "English", "Spanish")
+G20 <- c(1,1,1,0,0,1,1) # 1: in G20, 0: not in G20
+OECD <- c(0,1,1,0,0,1,0) # 1: in OECD, 0: not in OECD
+
+complementary <- data.frame(country, continent, languages, G20, OECD)
+
+knitr::kable(complementary)
+```
+
+
+```{r}
+# Making a subset of gapminder in order to use join with small data frame
+gapminder_Asia2007 <- gapminder %>% 
+  filter(continent == "Asia" & year == 2007 & lifeExp >=65) %>%
+  select(country, continent, gdpPercap, lifeExp, pop)
+
+knitr::kable(gapminder_Asia2007)
+
+```
+
+
+### 2.1. Using left join1
+```{r}
+left <- left_join(complementary, gapminder_Asia2007, by="country")
+knitr::kable(left)
+```
+
+##### Reflection
+Data in *gapminder_Asia2007* get into *complementary*. One problem is there are two continent columns (continent.x, continent.y) in the new dataset.
+
+
+### 2.2. Using left join2
+```{r}
+left2 <- left_join(complementary, gapminder_Asia2007, by=c("country", "continent"))
+knitr::kable(left2)
+```
+
+##### Reflection
+Using *continent* as well as *country* for left join can fix the problem of the first table.
+
+### 2.3. Using inner join
+```{r}
+inner <- inner_join(gapminder_Asia2007, complementary, by="country")
+knitr::kable(inner)
+```
+
+##### Reflection
+You can see there is no data for *Canada* and *Argentina* since I used inner join. The dataset *gapminder_Asia2007* does not include the countries in Americas.
+
+### 2.4. Using anti join
+```{r}
+anti <- anti_join(complementary, gapminder_Asia2007, by="country")
+knitr::kable(anti)
+```
+
+##### Reflection
+By using anti join, you can find *Canada* and *Argentina*.
+
+### 2.5. Using full join
+```{r}
+full <- full_join(complementary, gapminder_Asia2007, by=c("country","continent"))
+full <- arrange(full, continent)
+knitr::kable(full)
+```
+
+##### Reflection
+Finally, I used full join. You can see the union between the two datasets.
