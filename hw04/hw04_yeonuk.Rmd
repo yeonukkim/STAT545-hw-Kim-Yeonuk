@@ -11,6 +11,8 @@ suppressPackageStartupMessages(library(gapminder))
 suppressPackageStartupMessages(library(cowplot))
 ```
 
+
+
 # 1. General data reshaping and relationship to aggregation
 
 ## My choice: Activity #2
