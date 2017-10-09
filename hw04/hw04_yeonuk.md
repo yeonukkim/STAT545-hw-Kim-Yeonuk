@@ -7,10 +7,11 @@ Package info: I used *tidyverse*, *gapminder*, and *cowplot* (cowplot for plot l
 
     ## Warning: package 'cowplot' was built under R version 3.4.2
 
-1. General data reshaping and relationship to aggregation
----------------------------------------------------------
+Q1. Reshaping
+=============
 
-### My choice: Activity \#2
+My choice: Activity \#2
+-----------------------
 
 ### 1.1. Make a table
 
@@ -64,10 +65,11 @@ plot_grid(P1,P2,P3,P4, ncol = 2, nrow = 2, label_size = 8)
 
 I compared countries in EastAsia. The table column by each country looks useful when we compare time series variables. This table is also useful when making a scatter plot.
 
-2. Join, merge, look up
------------------------
+Q2. Join, merge, look up
+========================
 
-### My choice: Activity \#1
+My choice: Activity \#1
+-----------------------
 
 Create a second data frame, complementary to Gapminder
 
