@@ -1,0 +1,18 @@
+---
+title: "hw06_yeonuk"
+author: "yeonuk"
+date: "Nov 04, 2017"
+output: github_document
+---
+
+
+
+### load package 
+Package info: I used *gapminder* for this homework.
+```{r warning=FALSE}
+suppressPackageStartupMessages(library(tidyverse)) 
+suppressPackageStartupMessages(library(gapminder))
+suppressPackageStartupMessages(library(cowplot))
+suppressPackageStartupMessages(library(forcats))
+```
+
