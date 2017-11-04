@@ -2,30 +2,44 @@
 title: "hw06_yeonuk"
 author: "yeonuk"
 date: "Nov 04, 2017"
-output: github_document
+output: html_document
 ---
 
 ### What I did
 - Guideline: Pick (at least) two of the six (numbered) topics below and do one of the exercise prompts listed, or something comparable using your dataset of choice.
-- I've worked for **2. Writing functions, 4. Work with the singer data, 6. Work with a nested data frame**
+- I've worked for **2. Writing functions, 4. Work with the singer data**
 
 ### load package 
 ```{r warning=FALSE}
 suppressPackageStartupMessages(library(tidyverse)) 
+# for 2. Writing functions
 suppressPackageStartupMessages(library(gapminder))
+
+# for 4. Work with the singer data
+suppressPackageStartupMessages(library(purrr))
+suppressPackageStartupMessages(library(listviewer))
 suppressPackageStartupMessages(library(singer))
+suppressPackageStartupMessages(library(ggmap))
+suppressPackageStartupMessages(library(leaflet))
+
 
 ```
 
 ## Writing functions
 
-- Write one function that do something useful to pieces of the Gapminder.
-- The new function name is *compare_countries*.
-- As you know the gapminder dataset is not column by each country, so it is hard to compare each country without using *spread*. This new function can help you to compare any variable in gapminder dataset between two countries. The output includes a figure and linear regression info. Also, I added a warning message.
+- Guideline: Write one (or more) functions that do something useful to pieces of the Gapminder or Singer data.
+- I've wrote one function for **Gapminder.**
+- The name of new function is *compare_countries*.
+- As you know the gapminder dataset is not column by country, so it is hard to compare each country without using *spread*. This new function can help you to compare any variable in gapminder dataset between two countries. The output includes a figure and linear regression info (coefficients and r-squared). Also, I added a warning message.
+
+### 1. writing function
+The new function includes 4 subsections. The first part checks the input data and gives a user a warning message if the input is wrong. At the second part, the function filter and reshape the gapminder data to compare two countries. The role of last two parts is to make output. The output plot is generated in the third part, and the linear regression information is generated in the fourth part.
 
 ```{r}
 
+
 compare_countries <- function(data=gapminder, x, y, variable = gdpPercap){
+  # input information: x = country1, y = country2, default variable = gdpPercap
   
   # check the input data
   if( !(x %in% data$country) | !(y %in% data$country)  ) {
@@ -41,7 +55,8 @@ compare_countries <- function(data=gapminder, x, y, variable = gdpPercap){
   group_by(year) %>% 
   spread(key=country, value=variable)
   
-  # plot (FYI: eval(parse(text = x)) for changing string to variable name)
+  # plot 
+  # FYI: eval(parse(text = x)) for changing string to variable name
   p <- use %>% ggplot(aes(eval(parse(text = x)), eval(parse(text = y)), colour = year)) + 
       geom_point(size=2) + ggtitle(variable) + 
       xlab(x) + ylab(y) + theme_bw() +
@@ -61,15 +76,14 @@ compare_countries <- function(data=gapminder, x, y, variable = gdpPercap){
 ```
 
 
-
-### test function 1: compare life Expectancy between Canada and China
+### 2. test function 1: compare life Expectancy between Canada and China
 ```{r}
 compare_countries(data=gapminder, x = 'Canada', y = 'China', variable='lifeExp')
 
 ```
 
 
-### test function 2: compare GDP per cap between Canada and France
+### 3. test function 2: compare GDP per cap between Canada and France
 ```{r}
 compare_countries(data=gapminder, x = 'Canada', y = 'France', variable='gdpPercap')
 
@@ -78,13 +92,91 @@ compare_countries(data=gapminder, x = 'Canada', y = 'France', variable='gdpPerca
 
 ## Work with the singer data
 
-- Write one function that do something useful to pieces of the Gapminder.
+- Guideline: The singer_location dataframe in the singer package contains geographical information stored in two different formats: 1. as a (dirty!) variable named city; 2. as a latitude / longitude pair (stored in latitude,  longitude respectively). The function revgeocode from the ggmap library allows you to retrieve some information for a pair (vector) of longitude, latitude.
 
+
+### 1. Use purrr to map latitude and longitude into human readable information on the band’s origin places. 
+
+1.1. Subset of *singer_locations*
+
+Because the *singer_locations* dataset is too big to analyze, and there are plenty of *NA* in the location info as well, I've filtered rows which don't have location info and selects a subset of the dataset.
+Also, I've made a nested data by grouping longitude and latitude as a list. Please check the *Coordinates* column.
 ```{r}
+new_singer_locations <- singer_locations %>%
+  filter(longitude != 'Na') %>%
+  nest(c(longitude,latitude), .key = "Coordinates") %>% head(n = 10L)
+
+knitr::kable(new_singer_locations)
+
+```
+
+1.2. new function: *error_free_revgeocode*
+
+In order to avoid error when using *revgeocode*, I've tried to use *purrr:possibly()*, but I've failed to apply. 
+Instead of using *purrr:possibly()*, I've made a function which generate *NA* if the input is problematic. 
+Also, the new function changes the *revgeocode* output format from data frame to list.
+```{r}
+
+error_free_revgeocode <- function(data){
+  #data <- c(longitude,latitute)
+  if(data[1] < 180 &  data[1] >= -180 & data[2] <= 90 & data[2] >= -90){
+    result <- revgeocode(data, output = "more") #result format = df
+    result <- list(result) #result format = list
+  } else {
+    result <- NA
+  }
+  return(result)
+}
 
 ```
 
 
+1.3. Find location from coordinates by using new function based on *revgeocode*
+
+Please see the *location*.
+```{r warning=FALSE}
+
+new_singer_locations2 <- new_singer_locations %>%
+  group_by(track_id) %>%
+  mutate(location = error_free_revgeocode(unlist(Coordinates)))
+
+jsonedit(new_singer_locations2)
+
+
+```
+
+
+### 2. Try to check wether the place in city corresponds to the information you retrieved.
+
+As for this subset of *singer_locations*, retrieved address and info in column city are same. But, the retrieved address includes more detail information.
+```{r}
+city <- new_singer_locations2$city
+
+city_from_revgeocode <- new_singer_locations2$location %>%
+  map(list(1)) %>% unlist() %>% as.character()
+
+knitr::kable(cbind(city, city_from_revgeocode))
+
+
+```
+
+
+### 3. If you still have time, you can go visual
+
+Please click the markers, then you can see the names of singers. This package looks really cool!!
+```{r warning=FALSE}
+longitude <- new_singer_locations$Coordinates %>%
+  map_dbl(list(1))
+latitude <- new_singer_locations$Coordinates %>%
+  map_dbl(list(2))
+
+
+new_singer_locations %>%
+  leaflet()  %>%   
+  addTiles() %>%  
+  addMarkers(lng=longitude, lat=latitude, popup = ~artist_name)
+
+```
 
 
 
