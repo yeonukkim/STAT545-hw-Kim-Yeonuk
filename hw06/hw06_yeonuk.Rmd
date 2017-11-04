@@ -7,12 +7,13 @@ output: github_document
 
 ### What I did
 - Guideline: Pick (at least) two of the six (numbered) topics below and do one of the exercise prompts listed, or something comparable using your dataset of choice.
-- I've work for **2. Writing functions, 4. Work with the singer data, 6. Work with a nested data frame**
+- I've worked for **2. Writing functions, 4. Work with the singer data, 6. Work with a nested data frame**
 
 ### load package 
 ```{r warning=FALSE}
 suppressPackageStartupMessages(library(tidyverse)) 
 suppressPackageStartupMessages(library(gapminder))
+suppressPackageStartupMessages(library(singer))
 
 ```
 
@@ -74,7 +75,17 @@ compare_countries(data=gapminder, x = 'Canada', y = 'France', variable='gdpPerca
 
 ```
 
-I've tested wrong input as below figure,
+
+## Work with the singer data
+
+- Write one function that do something useful to pieces of the Gapminder.
+
+```{r}
+
+```
+
+
+
 
 
 
