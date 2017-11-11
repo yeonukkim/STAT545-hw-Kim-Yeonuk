@@ -18,5 +18,5 @@ Thanks.
 
 ### 2. STAT 547 (hw06 ~ hw10)
 
-- Homework 06: [Data wrangling wrap up](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/blob/master/hw06/hw06_yeonuk.md)
+- Homework 06: [Data wrangling wrap up](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/tree/master/hw06)
 

@@ -1,0 +1,72 @@
+---
+title: "01_pre_analysis"
+author: "Yeonuk"
+date: "November 13, 2017"
+output: github_document
+---
+
+
+## Load library
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(cowplot))
+suppressPackageStartupMessages(library(lubridate))
+
+```
+
+## Read the output of the first script
+```{r warning=FALSE}
+system_temp <- read_csv('system_temp.csv')
+current <- read_csv('current.csv')
+voltage <- read_csv('voltage.csv')
+
+knitr::kable(head(system_temp))
+knitr::kable(head(current))
+knitr::kable(head(voltage))
+
+```
+
+## Join
+```{r}
+merged_data <- inner_join(voltage,current,by='Time (PST)')
+merged_data <- inner_join(merged_data,system_temp,by='Time (PST)')
+
+knitr::kable(head(merged_data))
+knitr::kable(tail(merged_data))
+str(merged_data)
+
+```
+
+
+## Example figure
+```{r}
+# example: Nov. 2017
+eg <- merged_data %>%
+  filter(year(`Time (PST)`) == 2017 & month(`Time (PST)`) == 11) %>%
+  gather(key = "variable", value = "value", -c(1))
+
+vol_p <- eg %>% filter(variable %in% c("Logger Voltage", "Battery Voltage 1", "Battery Voltage 2")) %>%
+  ggplot(aes(x = `Time (PST)`, y = value, colour= variable)) +
+  geom_line() + theme_bw() + ggtitle("voltage") + theme(legend.justification=c(1,0), legend.position=c(1,0))
+  
+cur_p <- eg %>% filter(variable %in% c("Battery Current 1", "Battery Current 2")) %>%
+  ggplot(aes(x = `Time (PST)`, y = value, colour= variable)) +
+  geom_line() + theme_bw() + ggtitle("current") + theme(legend.justification=c(1,0), legend.position=c(1,0)) 
+  
+temp_p <- eg %>% 
+  filter(variable %in% c("Panel Temperature", "Battery Box Temperature 1", "Battery Box Temperature 2", "Case Temperature (4.25m)")) %>%
+  ggplot(aes(x = `Time (PST)`, y = value, colour= variable)) +
+  geom_line() + theme_bw() + ggtitle("system temperature") + theme(legend.justification=c(1,0), legend.position=c(1,0))
+
+
+plot_grid(vol_p,cur_p,temp_p,nrow=3)
+
+```
+
+
+```{r}
+write_csv(merged_data, path = 'C:\\Users\\Yeonuk\\Documents\\R\\STAT545-hw-Kim-Yeonuk\\hw07\\merged_data.csv')
+
+
+```
+
