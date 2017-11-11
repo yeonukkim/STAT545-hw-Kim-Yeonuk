@@ -1,6 +1,6 @@
 # HW06_yeonuk
 
-[Go to the homework!](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/blob/master/hw06/hw06_yeonuk.md)
+[Go to the homework!](https://rawgit.com/yeonukkim/STAT545-hw-Kim-Yeonuk/master/hw06/hw06_yeonuk.html)
 
 ## Brief reflection
 
