@@ -10,7 +10,7 @@ This flux tower system has been getting energy from solar panels, but rainy seas
 Particularly, the instrument for methane flux measurement consumes large energy, so decision making for turning on/off the instrument is important. 
 Personally, I used this homework to help this decision making. However, I did not fully accomplish my intention, and consequently the results are not well organized. I am so sorry for that. But, I will improve the results soon and I will use the *automating data-analysis pipelines* for my future work. 
 
-[figure](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/blob/master/hw07/flowchart.png)
+![figure](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/blob/master/hw07/flowchart.png)
 
 1. Download methane flux and other environmental measurement data.
 - The first R script downloaded methane flux (BBFMA.csv) and other variables which can affect methane flux (e.g. soil temperature).
@@ -22,5 +22,5 @@ Personally, I used this homework to help this decision making. However, I did no
 - The output of the second R script was also saved at the folder *raw_data*.
 
 3. Make figures.
-- 1) comparing availabilities of methane flux and other environmental data in terms of degree of such environmental data 
-- 2) checking position of the latest data.
+- Comparing availabilities of methane flux and other environmental data in terms of degree of such environmental data. 
+- Checking position of the latest data.
