@@ -19,4 +19,4 @@ Thanks.
 ### 2. STAT 547 (hw06 ~ hw10)
 
 - Homework 06: [Data wrangling wrap up](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/tree/master/hw06)
-
+- Homework 07: [Automating Data-analysis Pipelines](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/tree/master/hw07)
