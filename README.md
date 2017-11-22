@@ -20,3 +20,4 @@ Thanks.
 
 - Homework 06: [Data wrangling wrap up](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/tree/master/hw06)
 - Homework 07: [Automating Data-analysis Pipelines](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/tree/master/hw07)
+- Homework 08 :[Building Shiny apps](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/tree/master/hw08)
