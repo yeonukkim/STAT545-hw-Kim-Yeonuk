@@ -7,7 +7,7 @@
 
 ## Brief reflection
 
-I used the data which we used at the class. I added 5 features which are recomended or others.
+I used the data which we used at the class. I added 7 features which are recomended or others.
 
 1. Using *absolutePanel* to describe my information.
 2. Using *img(src = "imagename.png")* to add an image of the BC Liquor Store to the UI
