@@ -22,3 +22,4 @@ Thanks.
 - Homework 07: [Automating Data-analysis Pipelines](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/tree/master/hw07)
 - Homework 08: [Building Shiny apps](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/tree/master/hw08)
 - Homework 09: [HW 09 Building your own R package](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/tree/master/hw09)
+- Homework 10: [HW 10 Data from the Web](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/tree/master/hw10)
