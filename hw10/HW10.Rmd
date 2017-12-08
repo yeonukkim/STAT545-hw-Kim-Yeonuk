@@ -1,0 +1,29 @@
+---
+title: "HW10 Data from the Web"
+author: "Yeonuk"
+date: "December 7, 2017"
+output: github_document
+---
+
+I worked on *Scrape the web* among the three options.
+
+## IPCC Emission factor.
+What I did is download Emission Factor(EF) data from the Inter goverment Panel of Climate Change (IPCC) EF database (EFDB).
+Emission factors are quantitative indicators for Greenhouse gas emissions from specific sources (e.g., land use change and energy, etc.). These are global or regional default values based on scientific experiments.
+The EFDB web is: http://www.ipcc-nggip.iges.or.jp/EFDB/
+
+
+## Packages
+```{r}
+suppressWarnings(suppressMessages(library(tidyverse)))
+suppressWarnings(suppressMessages(library(magrittr)))
+suppressWarnings(suppressMessages(library(purrr)))
+suppressWarnings(suppressMessages(library(glue)))
+suppressWarnings(suppressMessages(library(stringr)))
+suppressWarnings(suppressMessages(library(rvest)))
+suppressWarnings(suppressMessages(library(xml2)))
+
+```
+
+
+## Access to web
