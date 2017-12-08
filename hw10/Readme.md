@@ -3,7 +3,7 @@ HW10 Data from the Web
 Yeonuk
 December 7, 2017
 
-[link to the hw10](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/edit/master/hw10/HW10.md)
+[link to the hw10](https://github.com/yeonukkim/STAT545-hw-Kim-Yeonuk/blob/master/hw10/HW10.md)
 
 ## Reflection
 - I worked on *Scrape the web* among the three options.
