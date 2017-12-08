@@ -7,13 +7,16 @@ output: github_document
 
 I worked on *Scrape the web* among the three options.
 
-## IPCC Emission factor.
-What I did is download Emission Factor(EF) data from the Inter goverment Panel of Climate Change (IPCC) EF database (EFDB).
-Emission factors are quantitative indicators for Greenhouse gas emissions from specific sources (e.g., land use change and energy, etc.). These are global or regional default values based on scientific experiments.
-The EFDB web is: http://www.ipcc-nggip.iges.or.jp/EFDB/
+## Conference Alert.
+: 2018 International Academic Conference Alerts
+*ConferenceAlert.com is a global platform to list, update & promote your upcoming conferences, events, seminars, webinars & international workshops. With over 100,000 registered subscribers, our users come from diverse academic as well as non-academic backgrounds, including industry experts, seasoned professors & research fellow from various universities. Our platform helps conference/event organizers to exclusively promote their event to the right audience; ensuring best ROI. With us, giving out information about your conference/event is just a few clicks away. Join Conference Alert today!*
+
+- This introduction from the Conference Alert website: https://conferencealert.com/
+
+I tried to get conference information by country. 
 
 
-## Packages
+### Packages
 ```{r}
 suppressWarnings(suppressMessages(library(tidyverse)))
 suppressWarnings(suppressMessages(library(magrittr)))
@@ -26,4 +29,153 @@ suppressWarnings(suppressMessages(library(xml2)))
 ```
 
 
-## Access to web
+### Get country name
+```{r}
+url <- "https://conferencealert.com/#"
+page <- read_html(url)
+
+page %>%
+  html_nodes(css = ".pktin2") %>%
+  html_text() 
+
+```
+
+Class of the all countries are *pktin2*.
+But.. looks anoying.
+
+### Cut character to get country name
+```{r}
+con_list <- c(page %>%
+               html_nodes(css = ".pktin2") %>%
+               html_text() %>%
+               strsplit("\t\n   \n")) 
+
+con_list
+```
+
+This looks better. 
+
+However, the last countries for each [[n]] are still problematic. See the *Venezuela*
+
+Also, this is a list by continent, but I want to get just a country name data frame.
+
+
+### Finally get country name.
+```{r}
+# function for remove "\t\n"
+rm_last_chrs <- function(x,n=4){
+    num <- nchar(x)
+    return(substr(x,1, num-n))
+}
+
+for(i in c(1:6)){
+  last <- length(con_list[[i]])
+  con_list[[i]][last] <- rm_last_chrs(con_list[[i]][last])
+}
+
+#change list to data frame (Is it best way??)
+use <- c(con_list[[1]],con_list[[2]],con_list[[3]],con_list[[4]],con_list[[5]],con_list[[6]])
+tail(df <- data_frame(country = use))
+
+```
+
+You can see the correct name of "Vnezue".
+
+One thing I need to mention is that I don't know the better way to change a list to a data frame or vector than what I did.
+If you have some suggestions, please let me know!
+
+
+### Get link to county conference info.
+```{r}
+
+conference_df <- df %>% mutate(Link = glue('https://conferencealert.com/{country}.php'))
+head(conference_df)
+
+
+
+```
+
+I choose Canada as an example. You can try using different country.
+
+
+### Get conference links for Canada
+```{r}
+# Canada conference link
+num <- which(conference_df$country=='Canada')
+link <- conference_df$Link[num]
+  
+
+
+href <- link %>% read_html() %>%
+          html_nodes(css = ".textLeft") %>%
+          html_attr("href")
+
+href <- href[!is.na(href)]
+
+head(canada_link <- glue("https://conferencealert.com/{href}"))
+
+```
+
+### Get conference info
+```{r}
+
+get_table <- function(link){
+
+df <- data_frame(Title = 
+                   link %>% 
+                   read_html() %>%
+                   html_nodes(".col-md-7") %>%
+                   html_nodes("span#eventNameHeader") %>%
+                   html_text(),
+                Abstract_deadline = 
+                   link %>% 
+                   read_html() %>%
+                   html_nodes(".col-md-7") %>%
+                   html_nodes("span#eventDeadline") %>%
+                   html_text(),
+                Date =
+                   link %>% 
+                   read_html() %>%
+                   html_nodes(".col-md-7") %>%
+                   html_nodes("span#eventDate") %>%
+                   html_text(),
+                Website = 
+                   link %>%
+                   read_html() %>%
+                   html_nodes(".col-md-7") %>%
+                   html_nodes("span#eventWebsite") %>%
+                   html_text(),
+                Organizer = 
+                   link %>%
+                   read_html() %>%
+                   html_nodes(".col-md-7") %>%
+                   html_nodes("span#eventOrganiser") %>%
+                   html_text(),
+                Detail = 
+                   link %>% 
+                   read_html() %>%
+                   html_nodes(".col-md-7") %>%
+                   html_nodes("span#eventDescription") %>%
+                   html_text()
+                   )
+return(df)
+}
+
+
+
+# This loop take long time... so I got only 5 conference data
+for (i in c(1:5)){
+  if (i==1) {
+    canada_conf <- canada_link[i] %>% get_table()
+  } else {
+    use <- canada_link[i] %>% get_table()
+    canada_conf <- rbind(canada_conf,use)
+  }
+}
+
+knitr::kable(canada_conf)
+
+```
+
+
+
