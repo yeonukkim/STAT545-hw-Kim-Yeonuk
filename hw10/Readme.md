@@ -7,7 +7,7 @@ December 7, 2017
 
 ## Reflection
 - I worked on *Scrape the web* among the three options.
-- The final goal is getting conference informatino table from *Conference Alert*.
+- The final goal is getting conference information table from *Conference Alert*.
 - Most difficult part is using *html_nodes*
 
 *html_nodes* can be used when the data I need under a class. But, data what I want to get is under *`<span itemprop="####" id="####">`*.
